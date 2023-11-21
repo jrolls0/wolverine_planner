@@ -1,0 +1,216 @@
+ body {
+  font-family: Arial, sans-serif;
+  background-color: #f3f3f3;
+  color: #333;
+}
+.container {
+  position: relative;
+  background-color: #fff;
+  border-radius: 5px;
+  box-shadow: 0px 0px 5px rgba(0,0,0,0.1);
+  width: 90vw; /* 90% of the viewport width */
+  margin: 0 auto; /* Center the container */
+}
+
+.calender-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+  border-radius: 5px;
+  width: 100%; /* Full width of its parent */
+}
+
+#schedule-info {
+  margin-top: 5px;
+  padding: 10px 20px;
+  background-color: #f7f7f7;
+  border-radius: 10px;
+  box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
+  font-family: Arial, sans-serif;
+  color: #333;
+}
+
+.days {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 1px;
+  border-left: 2px solid #3498db;
+  border-top: 2px solid #3498db;
+  border-bottom: 2px solid #3498db;
+  width: 100%; /* Full width of its parent */
+}
+
+
+.days .day {
+  border-right: 1px solid #3498db; /* reduced border */
+  padding: 2px; /* half of 10px */
+  background-color: #3498db;
+  color: white;
+  text-align: center;
+  font-weight: bold;
+  font-size: 0.75em; /* reduced font size */
+}
+.calendar {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  grid-template-rows: repeat(26, 1fr);
+  gap: 1px;
+  border-left: 2px solid #3498db;
+  border-top: 2px solid #3498db;
+  width: 100%; /* Full width of its parent */
+}
+.calendar-title-container {
+  text-align: center;
+  padding: 10px 0;
+  font-size: 1.75em;
+  font-weight: bold;
+  margin-bottom: 5px; /* Optional: Add some spacing between the title and the calendar */
+}
+
+.calendar .hour {
+  border-right: 1px solid #3498db; /* reduced border */
+  border-bottom: 1px solid #3498db; /* reduced border */
+  padding: 9.5px; /* half of 19px */
+  text-align: center;
+  background-color: #eaf5fe;
+  font-size: 0.9em; /* reduced font size */
+}
+
+.hour-labels {
+  display: grid;
+  grid-template-rows: repeat(29, 1fr);
+  gap: 1px;
+  border-left: 2px solid #3498db;
+  border-right: 2px solid #3498db;
+  border-top: 2px solid #3498db;
+  width: 60px; /* half of 60px */
+}
+
+.hour-labels .label {
+  border-bottom: 1px solid #3498db; /* reduced border */
+  padding: 2px; /* half of 10px */
+  text-align: center;
+  background-color: #eaf5fe;
+  font-size: 0.8em; /* reduced font size */
+}
+
+.class-block {
+  border: 1px solid #2ecc71;
+  font-size: 10px; /* slightly reduced font size */
+  background-color: #a2d9ce;
+
+  transition: background-color 0.3s;
+}
+.class-block h3 {
+  margin: 0;
+}
+.class-block p {
+  margin: 0;
+}
+
+.class-block:hover {
+  background-color: #82c8b7; /* A slightly darker shade on hover */
+}
+#scheduleForm {
+  position: relative;
+}
+.controls {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 10;
+}
+.controls button,
+#add-class,
+#add-section,
+#remove-row,
+#class-table button {
+  border: none;
+  background-color: #4169E1;
+  color: white;
+  padding: 5px 10px;
+  margin: 0 5px;
+  cursor: pointer;
+  font-size: 1em;
+  border-radius: 5px;
+}
+.controls button:hover,
+#add-class:hover,
+#remove-row:hover,
+#add-section:hover,
+#class-table button:hover {
+  background-color: #0000CD;
+}
+#scheduleForm input[type="submit"] {
+  border: none;
+  background-color: #FF4500;
+  color: white;
+  padding: 10px 20px;
+  margin: 10px 5px 0 5px; /* Added top margin */
+  cursor: pointer;
+  font-size: 1.2em;
+  font-weight: bold;
+  border-radius: 5px;
+}
+#scheduleForm input[type="submit"]:hover {
+  background-color: #E44D2A;
+}
+
+#restartButton {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  border: none;
+  background-color: #FF5733;
+  color: white;
+  padding: 7px 14px;
+  cursor: pointer;
+  font-size: 1.3em;
+  border-radius: 5px;
+  z-index: 10;
+}
+#restartButton:hover {
+  background-color: #E44D2A;
+}
+.error-message {
+  color: red;
+  font-weight: bold;
+}
+.invalid-input {
+  border: 2px solid red;
+}
+h1 {
+  color: #4169E1;
+  text-align: center;
+}
+form {
+  margin: 20px;
+  padding: 20px;
+  border: 1px solid #4169E1;
+  border-radius: 10px;
+  background-color: #ADD8E6;
+  box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
+}
+table {
+  margin: 20px;
+  padding: 20px;
+  border: 1px solid #4169E1;
+  border-radius: 10px;
+  background-color: #ADD8E6;
+  box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
+}
+.form-container {
+  display: flex;
+  justify-content: space-around;
+}
+.form-content {
+  display: flex;
+  justify-content: space-between;
+}
+table, th, td {
+  border: 1px solid black;
+  border-collapse: collapse;
+  padding: 5px;
+  text-align: left;
+}
