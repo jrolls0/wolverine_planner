@@ -1,0 +1,662 @@
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Schedule Generator</title>
+        <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    </head>
+    <body>
+        <nav>
+            <div class="site-title">Wolverine Planner</div>
+            <div class="nav-links">
+                <a href="about.html">About</a>
+                <a href="schedule-generator.html">Schedule Generator</a>
+                <a href="travel-calculator.html">Travel Calculator</a>
+            </div>
+        </nav>
+        <h1>Schedule Permutations Generator</h1>
+        <form id="scheduleForm" action="{{ url_for('schedule_generator') }}" method="POST">
+            <button id="restartButton" onclick="clearLocalStorage()">Reset Values</button>
+            <div class="form-container"></div>
+                <label for="num_scheds">Number of Potential Schedules:</label><br>
+                <input type="number" id="num_scheds" name="num_scheds"><br>
+                <label for="min_credits">Minimum Credits:</label><br>
+                <input type="number" step=".5" id="min_credits" name="min_credits"><br>
+                <label for="max_credits">Maximum Credits:</label><br>
+                <input type="number" step=".5" id="max_credits" name="max_credits"><br>
+                <label for="earliest_time">Earliest Start Time:</label><br>
+                <input type="time" id="earliest_time" name="earliest_time"><br>
+                <label for="latest_time">Latest End Time:</label><br>
+                <input type="time" id="latest_time" name="latest_time"><br>
+                <label for="dorm_loc">Dorm Building:</label><br>
+                <input type="text" id="dorm_loc" name="dorm_loc" list="buildings-dorm">
+                <datalist id="buildings-dorm">
+                    <!-- Building addresses will be added here -->
+                </datalist><br>
+
+                <label for="prefer_fridays_off">Prioritize Friday's Off?</label><br>
+                <select id="prefer_fridays_off" name="prefer_fridays_off">
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                </select><br>
+                <label for="sort_by">Sorting Primarily By:</label><br>
+                <select id="sort_by" name="sort_by">
+                    <option value="priority">Class Priority</option>
+                     <option value="travel_time">Travel Time</option>
+                </select><br>
+
+                <div>
+                    <table id="class-table">
+                        <tr>
+                            <th>Class Name</th>
+                            <th>Start Time</th>
+                            <th>Days (e.g., Mon, Thu)</th>
+                            <th>Duration (hrs)</th>
+                            <th>Building</th>
+                            <th>Credits</th>
+                            <th>Priority (1-3)</th>
+                        </tr>
+                        <!-- original row... -->
+                    </table>
+                    <button type="button" id="add-class" onclick="event.preventDefault();">Add Class</button>
+                    <button type="button" id="add-section" onclick="event.preventDefault();">Add Section</button>
+                    <button type="button" id="remove-row" onclick="deleteRow();">Remove Row</button>
+                </div>
+
+                <input type="submit" value="Generate Schedules">
+        </form>
+
+        <div class="container">
+            <div class="header-container">
+                <div class="calendar-title-container">
+                    Press "Generate Schedules" to Display Schedules
+                </div>
+                <div class="controls">
+                    <button id="prevButton">&#8592;</button>
+                    <button id="nextButton">&#8594;</button>
+                </div>
+            </div>
+            <div class = calender-container>
+                <div class="hour-labels">
+                    <div class="label"></div>
+                    <div class="label">7am</div>
+                    <div class="label"></div>
+                    <div class="label">8am</div>
+                    <div class="label"></div>
+                    <div class="label">9am</div>
+                    <div class="label"></div>
+                    <div class="label">10am</div>
+                    <div class="label"></div>
+                    <div class="label">11am</div>
+                    <div class="label"></div>
+                    <div class="label">12pm</div>
+                    <div class="label"></div>
+                    <div class="label">1pm</div>
+                    <div class="label"></div>
+                    <div class="label">2pm</div>
+                    <div class="label"></div>
+                    <div class="label">3pm</div>
+                    <div class="label"></div>
+                    <div class="label">4pm</div>
+                    <div class="label"></div>
+                    <div class="label">5pm</div>
+                    <div class="label"></div>
+                    <div class="label">6pm</div>
+                    <div class="label"></div>
+                    <div class="label">7pm</div>
+                    <div class="label"></div>
+                    <div class="label">8pm</div>
+                    <div class="label"></div>
+                </div>
+
+                <div>
+                    <div class="days">
+                        <div class="day">Monday</div>
+                        <div class="day">Tuesday</div>
+                        <div class="day">Wednesday</div>
+                        <div class="day">Thursday</div>
+                        <div class="day">Friday</div>
+                    </div>
+                    <div class="calendar">
+                        <div class="hour"></div>
+                        <div class="hour"></div>
+                        <div class="hour"></div>
+                        <div class="hour"></div>
+                        <div class="hour"></div>
+                        <div class="hour"></div>
+                        <div class="hour"></div>
+                        <div class="hour"></div>
+                        <div class="hour"></div>
+                        <div class="hour"></div>
+                        <div class="hour"></div>
+                        <div class="hour"></div>
+                        <div class="hour"></div>
+                        <div class="hour"></div>
+                        <div class="hour"></div>
+                        <div class="hour"></div>
+                        <div class="hour"></div>
+                        <div class="hour"></div>
+                        <div class="hour"></div>
+                        <div class="hour"></div>
+                        <div class="hour"></div>
+                        <div class="hour"></div>
+                        <div class="hour"></div>
+                        <div class="hour"></div>
+                        <div class="hour"></div>
+                        <div class="hour"></div>
+                        <div class="hour"></div>
+                        <div class="hour"></div>
+                        <div class="hour"></div>
+                        <div class="hour"></div>
+                        <div class="hour"></div>
+                        <div class="hour"></div>
+                        <div class="hour"></div>
+                        <div class="hour"></div>
+                        <div class="hour"></div>
+                        <div class="hour"></div>
+                        <div class="hour"></div>
+                        <div class="hour"></div>
+                        <div class="hour"></div>
+                        <div class="hour"></div>
+                        <div class="hour"></div>
+                        <div class="hour"></div>
+                        <div class="hour"></div>
+                        <div class="hour"></div>
+                        <div class="hour"></div>
+                        <div class="hour"></div>
+                        <div class="hour"></div>
+                        <div class="hour"></div>
+                        <div class="hour"></div>
+                        <div class="hour"></div>
+                        <div class="hour"></div>
+                        <div class="hour"></div>
+                        <div class="hour"></div>
+                        <div class="hour"></div>
+                        <div class="hour"></div>
+                        <div class="hour"></div>
+                        <div class="hour"></div>
+                        <div class="hour"></div>
+                        <div class="hour"></div>
+                        <div class="hour"></div>
+                        <div class="hour"></div>
+                        <div class="hour"></div>
+                        <div class="hour"></div>
+                        <div class="hour"></div>
+                        <div class="hour"></div>
+                        <div class="hour"></div>
+                        <div class="hour"></div>
+                        <div class="hour"></div>
+                        <div class="hour"></div>
+                        <div class="hour"></div>
+                        <div class="hour"></div>
+                        <div class="hour"></div>
+                        <div class="hour"></div>
+                        <div class="hour"></div>
+                        <div class="hour"></div>
+                        <div class="hour"></div>
+                        <div class="hour"></div>
+                        <div class="hour"></div>
+                        <div class="hour"></div>
+                        <div class="hour"></div>
+                        <div class="hour"></div>
+                        <div class="hour"></div>
+                        <div class="hour"></div>
+                        <div class="hour"></div>
+                        <div class="hour"></div>
+                        <div class="hour"></div>
+                        <div class="hour"></div>
+                        <div class="hour"></div>
+                        <div class="hour"></div>
+                        <div class="hour"></div>
+                        <div class="hour"></div>
+                        <div class="hour"></div>
+                        <div class="hour"></div>
+                        <div class="hour"></div>
+                        <div class="hour"></div>
+                        <div class="hour"></div>
+                        <div class="hour"></div>
+                        <div class="hour"></div>
+                        <div class="hour"></div>
+                        <div class="hour"></div>
+                        <div class="hour"></div>
+                        <div class="hour"></div>
+                        <div class="hour"></div>
+                        <div class="hour"></div>
+                        <div class="hour"></div>
+                        <div class="hour"></div>
+                        <div class="hour"></div>
+                        <div class="hour"></div>
+                        <div class="hour"></div>
+                        <div class="hour"></div>
+                        <div class="hour"></div>
+                        <div class="hour"></div>
+                        <div class="hour"></div>
+                        <div class="hour"></div>
+                        <div class="hour"></div>
+                        <div class="hour"></div>
+                        <div class="hour"></div>
+                        <div class="hour"></div>
+                        <div class="hour"></div>
+                        <div class="hour"></div>
+                        <div class="hour"></div>
+                        <div class="hour"></div>
+                        <div class="hour"></div>
+                        <div class="hour"></div>
+                        <div class="hour"></div>
+                        <div class="hour"></div>
+                        <div class="hour"></div>
+                        <div class="hour"></div>
+                        <div class="hour"></div>
+                        <div class="hour"></div>
+                        <div class="hour"></div>
+                        <div class="hour"></div>
+                        <div class="hour"></div>
+                        <div class="hour"></div>
+                        <div class="hour"></div>
+                        <div class="hour"></div>
+                        <div class="hour"></div>
+                        <div class="hour"></div>
+                        <div class="hour"></div>
+                        <div class="hour"></div>
+                    </div>
+                </div>
+            </div>
+            <div id = "schedule-info"></div>
+        </div>
+        <script>
+            // Replace with your own data
+            const dorm_names = ['Baits II', 'Betsy Barbour', 'Bursley Hall', 'Couzens Hall', 'East Quadrangle', 'Fletcher Hall',
+              'Helen Newberry', 'Henderson House', 'Martha Cook Building', 'Mary Markley Hall', 'Mosher-Jordan Hall',
+              'North Quadrangle', 'Oxford Houses', 'South Quadrangle', 'Stockwell Hall', 'West Quadrangle & Cambridge House']
+
+            const building_names = [
+                'Alumni Memorial Hall',
+                'Angel Hall',
+                'Architecture Building',
+                'Art & Architecture Building',
+                'Barbour Gymnasium',
+                'Biological Science Building',
+                'Blanch Anderson Moore Hall, School of Music',
+                'Bob and Betty Beyster Building',
+                'Burton Memorial Tower',
+                'Central Campus Classroom Bldg',
+                'Chemistry Building',
+                'Clements Library',
+                'Couzens Hall',
+                'Dana Building',
+                'Dana Building (School of Environment & Sustainability)',
+                'Dance Building',
+                'Dental Building',
+                'Dow Engineering Building',
+                'Duderstadt Center',
+                'East Engineering Building',
+                'East Hall',
+                'Economics Building',
+                'Electrical Engineering & Computer Science',
+                'Exhibit Museum',
+                'Francois-Xavier Bagnoud Building',
+                'General Library',
+                'G. G. Brown Laboratory',
+                'Gorguze Family Laboratory',
+                'Haven Hall',
+                'Helen Newberry Residence',
+                'Hill Auditorium',
+                'Hutchins Hall',
+                'Industrial and Operations Engineering Building',
+                'Institute for Social Research',
+                'Jeffries Hall, Law School',
+                'Kellogg Institute',
+                'Lane Hall',
+                'Lawyers Club',
+                'Mason Hall',
+                'Michigan Union',
+                'Modern Languages Building'
+            ];
+
+
+            var allInfo = JSON.parse('{{ all_info|tojson|safe }}');
+            var currentIndex = 0;
+            var removedBlocks = 0;
+
+            // Add building addresses to the dorm location datalist
+            var classAdded = false;
+            var dormDatalist = document.getElementById('buildings-dorm');
+            dorm_names.forEach(address => {
+                var option = document.createElement('option');
+                option.value = address;
+                dormDatalist.appendChild(option);
+            });
+
+            var colors = ['#FFD700', '#FF6347', '#32CD32', '#1E90FF', '#FF4500', '#DA70D6', '#8A2BE2', '#A52A2A', '#5F9EA0', '#D2691E'];
+            var colorIndex = 0;
+            var classColors = {};
+
+
+
+            function updateOptions(submission) {
+                var optionsDiv = document.getElementById('options');
+                var calendarDiv = document.querySelector('.calendar');
+
+                for (let i = 0; i < removedBlocks; i++) {
+                    var hourDiv = document.createElement('div');
+                    hourDiv.className = 'hour';
+                    calendarDiv.appendChild(hourDiv);
+                }
+                // Clear existing class blocks
+                var existingBlocks = calendarDiv.querySelectorAll('.class-block');
+                existingBlocks.forEach(function(block) {
+                    calendarDiv.removeChild(block);
+                });
+
+
+                if (submission == false && allInfo[0] === "ERROR") {
+                    alert(allInfo[1]);
+                    optionsDiv.innerHTML = 'No possible schedules with those parameters';
+                    return;
+                } else if (allInfo.length === 0) {
+                    optionsDiv.innerHTML = 'No possible schedules with those parameters';
+                    return;
+                }
+
+                var option = allInfo[currentIndex];
+                var classBlocksAdded = 0;
+
+                for (var day in option[0]) {
+                    if (option[0][day][1].length > 0) {
+                        for (var i = 0; i < option[0][day][1].length; i++) {
+                            var classInfo = option[0][day][1][i];
+                            var classDiv = document.createElement('div');
+                            classDiv.className = 'class-block';
+
+                            const startTimeParts = classInfo[1].split(':');
+                            let startHour = parseInt(startTimeParts[0], 10);
+                            let startMinutes = parseInt(startTimeParts[1], 10);
+
+                            // Adjust for PM times
+                            if (classInfo[1].toUpperCase().includes("PM") && startHour !== 12) {
+                                startHour += 12;
+                            }
+
+                            // Calculate gridRowStart based on start time
+                            const gridRowStart = (startHour - 6) * 2 + (startMinutes >= 30 ? 1 : 0) - 1;
+
+                            // Calculate gridRowEnd based on the duration
+                            const durationInHours = parseFloat(classInfo[2]);
+                            const gridRowEnd = gridRowStart + (durationInHours * 2); // Multiply by 2 to account for half-hour increments
+
+                            // Set grid styles
+                            classDiv.style.gridRowStart = gridRowStart;
+                            classDiv.style.gridRowEnd = gridRowEnd;
+                            classDiv.style.gridColumn = parseInt(day, 10) + 1;
+
+                            // Set class details
+                            classDiv.innerHTML = `
+                                <h3>${classInfo[0]}</h3>
+                                <p>Building: ${classInfo[3]}<br>Travel Time: ${option[3][day][i]} mins</p>
+                            `;
+
+                            if (!classColors[classInfo[0]]) {
+                                classColors[classInfo[0]] = colors[colorIndex];
+                                colorIndex = (colorIndex + 1) % colors.length;
+                            }
+
+
+                            classDiv.style.backgroundColor = classColors[classInfo[0]];
+                            calendarDiv.appendChild(classDiv);
+                            classBlocksAdded += durationInHours * 2;
+                        }
+                    }
+
+                }
+                removedBlocks = classBlocksAdded;
+                // Remove excess cells
+                var allHours = calendarDiv.querySelectorAll('.hour');
+                for (let i = 0; i < classBlocksAdded; i++) {
+                    if (allHours.length - 1 - i >= 0) {
+                        calendarDiv.removeChild(allHours[allHours.length - 1 - i]);
+                    }
+                 }
+
+                updateCalendarTitle(currentIndex);
+
+                // Get the 'schedule-info' div
+                var scheduleInfoDiv = document.getElementById('schedule-info');
+
+                // Construct the HTML string with the provided info
+                var html = '<p>Total Credits: ' + option[2] + '</p>';
+                html += '<p>Total Travel Time: ' + option[1] + ' minutes</p>';
+                html += '<p>Priority Pts per Credit: ' + (option[4] / option[2]).toFixed(2) + '</p>';
+
+                // Set the innerHTML of the 'schedule-info' div
+                scheduleInfoDiv.innerHTML = html;
+            }
+
+            function updateCalendarTitle(currentIndex) {
+                var titleContainer = document.querySelector('.calendar-title-container');
+                titleContainer.textContent = 'Possible Schedule #' + (currentIndex + 1);
+            }
+
+
+
+            function deleteRow() {
+                var table = document.getElementById('class-table');
+                if (table.rows.length > 1){
+                    table.deleteRow(-1);
+                }
+            }
+
+            function validateTable() {
+                var table = document.getElementById('class-table');
+                var rows = Array.from(table.rows).slice(1); // Exclude the header row
+                var isValid = true;
+                rows.forEach(row => {
+                    Array.from(row.cells).forEach(cell => {
+                        var input = cell.querySelector('input');
+                        if (input && !input.value) {
+                            cell.classList.add('error-cell');
+                            isValid = false;
+                        } else {
+                            cell.classList.remove('error-cell');
+                        }
+                    });
+                });
+                return isValid;
+            }
+            function validateForm() {
+                var formContainer = document.querySelector('.form-container');
+                var inputIds = [
+                    'num_scheds', 'min_credits', 'max_credits', 'earliest_time',
+                    'latest_time', 'dorm_loc'
+                ];
+
+                for (var i = 0; i < inputIds.length; i++) {
+                    var input = formContainer.querySelector('#' + inputIds[i]);
+                    if (!input || input.value.trim() === '') {
+                        return false; // Returns false if any input field is empty
+                    }
+                }
+
+                return true; // Returns true if all input fields are filled
+            }
+
+
+            function clearLocalStorage() {
+                event.preventDefault()
+                localStorage.clear(); // Clears everything from local storage
+                location.reload();
+            }
+
+            function saveTableValues() {
+                var table = document.getElementById('class-table');
+                var rows = Array.from(table.rows).slice(1); // Exclude the header row
+                var tableValues = rows.map(row => Array.from(row.cells).map(cell => cell.querySelector('input') ? cell.querySelector('input').value : cell.textContent));
+                localStorage.setItem('tableValues', JSON.stringify(tableValues));
+            }
+
+            function loadTableValues() {
+                var tableValues = localStorage.getItem('tableValues');
+                if (tableValues) {
+                    tableValues = JSON.parse(tableValues);
+                    tableValues.forEach((rowValues, rowIndex) => {
+                        var buildingDatalistId = 'buildings-' + Date.now();
+                        if (rowValues[0] == "Section Info:") {
+                            var row = document.getElementById('class-table').insertRow(-1);
+                            row.insertCell(0).innerHTML = 'Section Info:';
+                            for (var i = 1; i < 7; i++) {
+                                var inputType = 'text';
+                                if (i === 1) inputType = 'time';
+                                if (i === 3 || i === 5 ) inputType = 'number step=".5"';
+                                if (i ==6) inputType = 'number';
+                                if (i == 4) row.insertCell(4).innerHTML = '<input type="text" name="class_info" list="' + buildingDatalistId + '" value="' + rowValues[4] + '"><datalist id="' + buildingDatalistId + '">' + building_names.map(address => '<option value="' + address + '">').join('') + '</datalist>';
+                                else row.insertCell(i).innerHTML = '<input type="' + inputType + '" name="class_info" value="' + rowValues[i] + '">';
+
+                            }
+                        } else {
+                            var row = document.getElementById('class-table').insertRow(-1);
+                            row.insertCell(0).innerHTML = '<input type="text" name="class_info" value="' + rowValues[0] + '">';
+                            for (var i = 1; i < 7; i++) {
+                                row.insertCell(i).innerHTML = '';
+                            }
+                        }
+                    });
+                }
+            }
+
+            function saveFormValues() {
+                var form = document.getElementById('scheduleForm');
+                var formData = new FormData(form);
+                var inputArray = Array.from(formData.entries());
+
+                localStorage.setItem('formValues', JSON.stringify(inputArray));
+                saveTableValues();
+            }
+
+            function loadFormValues() {
+                var formValues = localStorage.getItem('formValues');
+
+                if (formValues) {
+                    formValues = JSON.parse(formValues);
+
+                    formValues.forEach(function([name, value]) {
+                        var input = document.getElementById(name);
+                        if (input) {
+                            input.value = value;
+                        }
+                    });
+                }
+                loadTableValues();
+            }
+
+            function addClass() {
+                var table = document.getElementById('class-table');
+                if (table.rows.length == 1 ) {
+                    var row = table.insertRow(-1);  // insert at the end
+
+                    row.insertCell(0).innerHTML = '<input type="text" name="class_info">';
+                    // add empty cells for the other columns
+                    for (var i = 1; i < 7; i++) {
+                        row.insertCell(i).innerHTML = '';
+                    }
+
+                    // Add datalist for Umich Building
+                    var buildingDatalistId = 'buildings-' + Date.now();
+
+                    // Add section info row
+                    var row = table.insertRow(-1);
+                    // add input fields for everything but class name
+                    row.insertCell(0).innerHTML = 'Section Info:';
+                    row.insertCell(1).innerHTML = '<input type="time" name="class_info">';
+                    row.insertCell(2).innerHTML = '<input type="text" name="class_info">';
+                    row.insertCell(3).innerHTML = '<input type="number" step=".5" name="class_info">';
+                    row.insertCell(4).innerHTML = '<input type="text" name="class_info" list="' + buildingDatalistId + '"><datalist id="' + buildingDatalistId + '">' + building_names.map(address => '<option value="' + address + '">').join('') + '</datalist>';
+                    row.insertCell(5).innerHTML = '<input type="number" step=".5" name="class_info">';
+                    row.insertCell(6).innerHTML = '<input type="number" name="class_info">';
+                }
+            }
+
+            loadFormValues();
+
+            document.getElementById('scheduleForm').addEventListener('submit', function(event) {
+                if (!validateTable()) {
+                    event.preventDefault(); // Stop form submission
+                    alert('Please fill in all table cells!');
+                }
+                else {
+                    // event.preventDefault(); // Prevent default form submission
+
+                    saveFormValues();
+                    var form = this;
+                    var formData = new FormData(form);
+                    var inputArray = Array.from(formData.values());
+
+                    // // Sending POST request using AJAX
+                    // var xhr = new XMLHttpRequest();
+                    // xhr.open(form.method, form.action);
+                    // xhr.send(formData);
+
+                    updateOptions(true);
+                }
+            });
+
+
+            document.getElementById('add-class').addEventListener('click', function() {
+                var table = document.getElementById('class-table');
+                var row = table.insertRow(-1);  // insert at the end
+
+                row.insertCell(0).innerHTML = '<input type="text" name="class_info">';
+                // add empty cells for the other columns
+                for (var i = 1; i < 7; i++) {
+                    row.insertCell(i).innerHTML = '';
+                }
+
+                // Add datalist for Umich Building
+                var buildingDatalistId = 'buildings-' + Date.now();
+
+                // Add section info row
+                var row = table.insertRow(-1);
+                // add input fields for everything but class name
+                row.insertCell(0).innerHTML = 'Section Info:';
+                row.insertCell(1).innerHTML = '<input type="time" name="class_info">';
+                row.insertCell(2).innerHTML = '<input type="text" name="class_info">';
+                row.insertCell(3).innerHTML = '<input type="number" step=".5" name="class_info">';
+                row.insertCell(4).innerHTML = '<input type="text" name="class_info" list="' + buildingDatalistId + '"><datalist id="' + buildingDatalistId + '">' + building_names.map(address => '<option value="' + address + '">').join('') + '</datalist>';
+                row.insertCell(5).innerHTML = '<input type="number" step=".5" name="class_info">';
+                row.insertCell(6).innerHTML = '<input type="number" name="class_info">';
+            });
+
+            document.getElementById('add-section').addEventListener('click', function() {
+                var table = document.getElementById('class-table');
+
+                if (table.rows.length > 1) {
+                    var row = table.insertRow(-1);
+                    // Add datalist for Umich Building
+                    var buildingDatalistId = 'buildings-' + Date.now();
+                    // Add input fields for everything but class name
+                    row.insertCell(0).innerHTML = 'Section Info:';
+                    row.insertCell(1).innerHTML = '<input type="time" name="class_info">';
+                    row.insertCell(2).innerHTML = '<input type="text" name="class_info">';
+                    row.insertCell(3).innerHTML = '<input type="number" step=".5" name="class_info">';
+                    row.insertCell(4).innerHTML = '<input type="text" name="class_info" list="' + buildingDatalistId + '"><datalist id="' + buildingDatalistId + '">' + building_names.map(address => '<option value="' + address + '">').join('') + '</datalist>';
+                    row.insertCell(5).innerHTML = '<input type="number" step=".5" name="class_info">';
+                    row.insertCell(6).innerHTML = '<input type="number" name="class_info">';
+                }
+            });
+            addClass();
+            updateOptions(false);
+
+            document.getElementById('prevButton').addEventListener('click', function() {
+                if (currentIndex > 0) {
+                    currentIndex--;
+                    updateOptions(true);
+                }
+            });
+
+            document.getElementById('nextButton').addEventListener('click', function() {
+                if (currentIndex < allInfo.length - 1) {
+                    currentIndex++;
+                    updateOptions(true);
+                }
+            });
+        </script>
+    </body>
+</html>
