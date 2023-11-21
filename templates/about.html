@@ -1,0 +1,61 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Wolverine Planner</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+
+        body {
+            background-image: url('https://cdn.wallpapersafari.com/97/9/qTKcFj.jpg');
+            background-size: cover;
+            background-attachment: fixed;
+        }
+
+
+        .about-container {
+            padding: 40px;
+            background-color: #f9f9f9; /* Light background */
+            border-radius: 10px; /* Rounded edges */
+            box-shadow: 0px 0px 20px rgba(0,0,0,0.1);
+            max-width: 900px;
+            margin: 40px auto; /* Center the container */
+            font-family: Arial, sans-serif;
+        }
+
+        .about-container h1 {
+            color: #4169E1;
+            text-align: center;
+            margin-bottom: 30px;
+            font-weight: bold;
+        }
+
+        .about-container p {
+            font-size: 1.1em;
+            line-height: 1.6;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="site-title">Wolverine Planner</div>
+        <div class="nav-links">
+            <a href="{{ url_for('about') }}">About</a>
+            <a href="{{ url_for('schedule_generator') }}">Schedule Generator</a>
+            <a href="{{ url_for('travel_calculator') }}">Travel Calculator</a>
+        </div>
+    </nav>
+    <div class="container about-container">
+
+<h1>Wolverine Planner</h1>
+<p>This innovative tool is exclusively designed to assist students at the University of Michigan in finding the perfect schedule that aligns with their academic needs and personal preferences. By considering an array of factors such as travel times, credit load, and individual preferences, the Wolverine Planner crafts personalized schedules tailored for each user.</p>
+<p><strong>Ease of Use:</strong> With an intuitive interface and robust algorithm, the tool streamlines the semester planning process, allowing students to focus on what truly matters: their education.</p>
+<p><strong>Versatility:</strong> Whether you're a freshman embarking on your academic journey or a seasoned senior seeking to optimize your final semester, our Schedule Generator and Travel Time Calculator are equipped to meet your unique needs.</p>
+<p><strong>Commitment to Excellence:</strong> As part of the University of Michigan's ongoing mission to foster academic success, the Wolverine Planner is committed to providing a valuable resource that enhances the student experience.</p>
+
+    </div>
+</body>
+</html>
