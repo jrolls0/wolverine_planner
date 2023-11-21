@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Travel Generator</title>
+        <link rel="stylesheet" href="css/travel.css">
+    </head>
+    <body>
+        <nav>
+            <div class="site-title">Wolverine Planner</div>
+            <div class="nav-links">
+                <a href="about.html">About</a>
+                <a href="schedule-generator.html">Schedule Generator</a>
+                <a href="travel-calculator.html">Travel Calculator</a>
+            </div>
+        </nav>
+        <h1>Schedule Travel Time Calculator</h1>
+
+        <form id="scheduleForm" action="{{ url_for('travel_calculator') }}" method="POST">
+            <button id="restartButton" onclick="clearLocalStorage()">Reset Values</button>
+            <div class="form-container"></div>
+                <label for="dorm_loc">Dorm Building:</label><br>
+                <input type="text" id="dorm_loc" name="dorm_loc" list="buildings-dorm">
+                <datalist id="buildings-dorm">
+                    <!-- Building addresses will be added here -->
+                </datalist><br>
+
+                <div>
+                    <table id="class-table">
+                        <tr>
+                            <th>Class Name</th>
+                            <th>Start Time</th>
+                            <th>Days (e.g., Mon, Thu)</th>
+                            <th>Building</th>
+                        </tr>
+                        <!-- original row... -->
+                    </table>
+                    <button type="button" id="add-class" onclick="event.preventDefault();">Add Class</button>
+                    <button type="button" id="remove-row" onclick="deleteRow();">Remove Row</button>
+                </div>
+
+                <input type="submit" value="Generate Schedules">
+        </form>
+
+        <div class="container">
+            <div class="controls">
+            </div>
+            <div id="options">
+                <!-- Schedule options will be inserted here by JavaScript -->
+            </div>
+        </div>
+        <script>
+            // Replace with your own data
+            var dorm_names = ['Baits II', 'Betsy Barbour', 'Bursley Hall', 'Couzens Hall', 'East Quadrangle', 'Fletcher Hall',
+              'Helen Newberry', 'Henderson House', 'Martha Cook Building', 'Mary Markley Hall', 'Mosher-Jordan Hall',
+              'North Quadrangle', 'Oxford Houses', 'South Quadrangle', 'Stockwell Hall', 'West Quadrangle & Cambridge House']
+
+            const building_names = [
+                'Alumni Memorial Hall',
+                'Angel Hall',
+                'Architecture Building',
+                'Art & Architecture Building',
+                'Barbour Gymnasium',
+                'Biological Science Building',
+                'Blanch Anderson Moore Hall, School of Music',
+                'Bob and Betty Beyster Building',
+                'Burton Memorial Tower',
+                'Central Campus Classroom Bldg',
+                'Chemistry Building',
+                'Clements Library',
+                'Couzens Hall',
+                'Dana Building',
+                'Dana Building (School of Environment & Sustainability)',
+                'Dance Building',
+                'Dental Building',
+                'Dow Engineering Building',
+                'Duderstadt Center',
+                'East Engineering Building',
+                'East Hall',
+                'Economics Building',
+                'Electrical Engineering & Computer Science',
+                'Exhibit Museum',
+                'Francois-Xavier Bagnoud Building',
+                'General Library',
+                'G. G. Brown Laboratory',
+                'Gorguze Family Laboratory',
+                'Haven Hall',
+                'Helen Newberry Residence',
+                'Hill Auditorium',
+                'Hutchins Hall',
+                'Industrial and Operations Engineering Building',
+                'Institute for Social Research',
+                'Jeffries Hall, Law School',
+                'Kellogg Institute',
+                'Lane Hall',
+                'Lawyers Club',
+                'Mason Hall',
+                'Michigan Union',
+                'Modern Languages Building'
+            ];
+
+            var travel_time = JSON.parse('{{ travel_time|tojson|safe }}');
+            var currentIndex = 0;
+
+            // Add building addresses to the dorm location datalist
+            var dormDatalist = document.getElementById('buildings-dorm');
+            dorm_names.forEach(address => {
+                var option = document.createElement('option');
+                option.value = address;
+                dormDatalist.appendChild(option);
+            });
+
+            function updateOptions() {
+                var optionsDiv = document.getElementById('options');
+                optionsDiv.innerHTML = "Total Travel Time: " + travel_time + " minutes";
+            }
+
+            function deleteRow() {
+                var table = document.getElementById('class-table');
+                if (table.rows.length > 1){
+                    table.deleteRow(-1);
+                }
+            }
+
+            function validateTable() {
+                var table = document.getElementById('class-table');
+                var rows = Array.from(table.rows).slice(1); // Exclude the header row
+                var isValid = true;
+                rows.forEach(row => {
+                    Array.from(row.cells).forEach(cell => {
+                        var input = cell.querySelector('input');
+                        if (input && !input.value) {
+                            cell.classList.add('error-cell');
+                            isValid = false;
+                        } else {
+                            cell.classList.remove('error-cell');
+                        }
+                    });
+                });
+                return isValid;
+            }
+
+            function validateForm() {
+                var dormInput = document.getElementById('dorm_loc');
+                if (!dormInput || dormInput.value.trim() === '') {
+                    return false; // Returns false if the dorm input field is empty
+                }
+
+                return true; // Returns true if all input fields are filled
+            }
+
+            function clearLocalStorage() {
+                event.preventDefault()
+                localStorage.clear(); // Clears everything from local storage
+                location.reload();
+            }
+
+            function saveTableValues() {
+                var table = document.getElementById('class-table');
+                var rows = Array.from(table.rows).slice(1); // Exclude the header row
+                var travelTableValues = rows.map(row => Array.from(row.cells).map(cell => cell.querySelector('input') ? cell.querySelector('input').value : cell.textContent));
+                localStorage.setItem('travelTableValues', JSON.stringify(travelTableValues));
+            }
+
+            function loadTableValues() {
+                var travelTableValues = localStorage.getItem('travelTableValues');
+                if (travelTableValues) {
+                    travelTableValues = JSON.parse(travelTableValues);
+                    travelTableValues.forEach((rowValues, rowIndex) => {
+                        var buildingDatalistId = 'buildings-' + Date.now();
+                        var row = document.getElementById('class-table').insertRow(-1);
+                        row.insertCell(0).innerHTML = '<input type="text" name="class_info" value="' + rowValues[0] + '">';
+                        row.insertCell(1).innerHTML = '<input type="time" name="class_info" value="' + rowValues[1] + '">';
+                        row.insertCell(2).innerHTML = '<input type="text" name="class_info" value="' + rowValues[2] + '">';
+                        row.insertCell(3).innerHTML = '<input type="text" name="class_info" list="' + buildingDatalistId + '" value="' + rowValues[3] + '"><datalist id="' + buildingDatalistId + '">' + building_names.map(address => '<option value="' + address + '">').join('') + '</datalist>';
+                    });
+                }
+            }
+
+            function saveFormValues() {
+                var form = document.getElementById('scheduleForm');
+                var formData = new FormData(form);
+                var inputArray = Array.from(formData.entries());
+
+                localStorage.setItem('formValues', JSON.stringify(inputArray));
+                saveTableValues();
+            }
+
+            function loadFormValues() {
+                var formValues = localStorage.getItem('formValues');
+
+                if (formValues) {
+                    formValues = JSON.parse(formValues);
+
+                    formValues.forEach(function([name, value]) {
+                        var input = document.getElementById(name);
+                        if (input) {
+                            input.value = value;
+                        }
+                    });
+                }
+                loadTableValues();
+            }
+
+             function addClass() {
+                var table = document.getElementById('class-table');
+                var row = table.insertRow(-1);  // insert at the end
+                var buildingDatalistId = 'buildings-' + Date.now();
+
+                row.insertCell(0).innerHTML = '<input type="text" name="class_info">';
+                row.insertCell(1).innerHTML = '<input type="time" name="class_info">';
+                row.insertCell(2).innerHTML = '<input type="text" name="class_info">';
+                row.insertCell(3).innerHTML = '<input type="text" name="class_info" list="' + buildingDatalistId + '"><datalist id="' + buildingDatalistId + '">' + building_names.map(address => '<option value="' + address + '">').join('') + '</datalist>';
+            }
+
+            loadFormValues();
+
+            document.getElementById('scheduleForm').addEventListener('submit', function(event) {
+                if (!validateForm()) {
+                    event.preventDefault(); // Stop form submission
+                    alert('Please fill in dorm location!');
+                }
+                else if (!validateTable()) {
+                    event.preventDefault(); // Stop form submission
+                    alert('Please fill in all table cells!');
+                }
+                else {
+                    saveFormValues();
+
+                    var form = this;
+                    var formData = new FormData(form);
+                    var inputArray = Array.from(formData.values());
+                    // Sending POST request using AJAX
+                    var xhr = new XMLHttpRequest();
+                    xhr.open(form.method, form.action);
+                    xhr.send(formData);
+
+                    updateOptions();
+                }
+            });
+
+            document.getElementById('add-class').addEventListener('click', function() {
+                var table = document.getElementById('class-table');
+                var row = table.insertRow(-1);  // insert at the end
+                var buildingDatalistId = 'buildings-' + Date.now();
+
+                row.insertCell(0).innerHTML = '<input type="text" name="class_info">';
+                row.insertCell(1).innerHTML = '<input type="time" name="class_info">';
+                row.insertCell(2).innerHTML = '<input type="text" name="class_info">';
+                row.insertCell(3).innerHTML = '<input type="text" name="class_info" list="' + buildingDatalistId + '"><datalist id="' + buildingDatalistId + '">' + building_names.map(address => '<option value="' + address + '">').join('') + '</datalist>';
+
+                // var deleteButtonCell = row.insertCell(7);
+                // deleteButtonCell.innerHTML = '<button onclick="deleteRow(' + rowIndex + ')">Delete Row</button>';
+            });
+
+            addClass();
+            updateOptions();
+        </script>
+    </body>
+</html>
+
+
