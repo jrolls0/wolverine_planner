@@ -3,6 +3,41 @@ body {
   background-color: #f3f3f3;
   color: #333;
 }
+
+nav {
+    background-color: #0000CD; 
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 0; 
+}
+
+nav .site-title {
+    font-size: 1.5em; 
+    font-family: 'Georgia, serif'; 
+    color: #ADD8E6;
+    margin-left: 15px;
+}
+
+nav .nav-links {
+    display: flex;
+    gap: 10px;
+}
+
+nav .nav-links a {
+    text-decoration: none;
+    color: white;
+    padding: 5px 10px;
+    background-color: transparent;
+    font-size: 1em;
+}
+
+nav .nav-links a:hover {
+    background-color: #4169E1;
+    color: white;
+}
+
 .container {
   position: relative;
   background-color: #fff;
