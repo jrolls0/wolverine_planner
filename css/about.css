@@ -2,22 +2,21 @@ body {
     font-family: Arial, sans-serif;
     background-color: #f3f3f3;
     color: #333;
-    margin: 0; /* Remove default margin */
 }
 
 nav {
-    background-color: #0000CD; /* Darker blue background */
+    background-color: #0000CD; 
     padding: 10px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin: 0; /* No margin */
+    margin: 0; 
 }
 
 nav .site-title {
-    font-size: 1.5em; /* Larger font size */
-    font-family: 'Georgia, serif'; /* Different font */
-    color: #ADD8E6; /* Slightly different color */
+    font-size: 1.5em; 
+    font-family: 'Georgia, serif';
+    color: #ADD8E6; 
     margin-left: 15px;
 }
 
@@ -28,7 +27,7 @@ nav .nav-links {
 
 nav .nav-links a {
     text-decoration: none;
-    color: white; /* White color for navigation options */
+    color: white; 
     padding: 5px 10px;
     background-color: transparent;
     font-size: 1em;
